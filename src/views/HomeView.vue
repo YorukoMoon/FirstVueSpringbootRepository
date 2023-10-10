@@ -1,6 +1,6 @@
 <template>
   <div>
-    我只想要这一个
+    我是home内容
   </div>
 </template>
 

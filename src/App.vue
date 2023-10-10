@@ -1,12 +1,8 @@
 <template>
   <div id="app">
-   这个也行
+   app内容
+   <router-view></router-view>
+
   </div>
 </template>
 
-<style lang="scss">
-#app {
-  
-}
-
-</style>
