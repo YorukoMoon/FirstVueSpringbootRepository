@@ -18,9 +18,6 @@
       </el-submenu>
 
     </el-menu>
-    <div style="width: 200px;height: 200px;background-color: aqua">
-      你好
-    </div>
 
     //可搜索的选择框
     <el-select v-model="value" placeholder="请选择" filterable>
@@ -48,16 +45,17 @@
     <el-row>
       <el-col :span="12">
 
-        <el-table :data="tableData">
-          <el-table-column label="序号" prop="id"></el-table-column>
-          <el-table-column label="名称" prop="name"></el-table-column>
-          <el-table-column label="年龄" prop="age"></el-table-column>
+        <el-table :data="users">
+          <el-table-column label="id" prop="id"></el-table-column>
+
+          <el-table-column label="用户名" prop="username"></el-table-column>
+          <el-table-column label="姓名" prop="name"></el-table-column>
           <el-table-column label="地址" prop="address"></el-table-column>
-          <el-table-column label="操作">
-            <template v-slot="scope">
-              <el-button type="primary" @click="edit(scope.row)">操作</el-button>
-            </template>
-          </el-table-column>
+<!--          <el-table-column label="操作">-->
+<!--            <template v-slot="scope">-->
+<!--              <el-button type="primary" @click="edit(scope.row)">操作</el-button>-->
+<!--            </template>-->
+<!--          </el-table-column>-->
         </el-table>
 
       </el-col>
@@ -68,7 +66,11 @@
 
 <script>
 
+import request from "@/utils/request";
+
 export default {
+
+
   name: 'ElementTest',//不是错误，是说建议我用多个单词组成的名字命名组件，你改成elemetTest就没事了
   data() {
     return {
@@ -95,13 +97,20 @@ export default {
       tableData: [
         {name: '情哥哥', address: '安徽合肥', id: 1, age: "30"}
       ],
+      users : [],
+
 
 
     }
 
   },
 
+
   methods: {
+
+
+
+
     edit() {
       this.$confirm("这是个什么东西", "提示", {
         type: "warning"
@@ -111,6 +120,7 @@ export default {
         this.$message.warning("取消")
           })
     },
+
 
 
     querySearch(queryString, cb) {
@@ -133,7 +143,21 @@ export default {
 
 //加载完成后触发
   mounted() {
-    this.restaurants = this.loadAll();
+    request.get('http://localhost:8081/user/selectAll').then(res=>{
+      console.log(res)
+      this.users = res.data;
+        },
+
+    // axios.get('http://localhost:8081/user/selectAll').then(res=>{
+    //       console.log(res)
+    //       this.users = res.data.data;
+    //     }
+
+
+    )
+
+
+
   }
 
 }
