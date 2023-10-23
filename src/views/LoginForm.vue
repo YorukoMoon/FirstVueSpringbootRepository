@@ -134,15 +134,15 @@ export default {
               // 使用 Axios 发起登录请求
               this.$request.post('/login', this.user)
                   .then(res => {
-                    if (res.code === 200) {
-                      // 登录成功后的逻辑处理
-                      this.$message({
-                        message: "登陆成功，欢迎回来:" + res.data.username,
-                        type: 'success',
-                      });
-                      // 可以跳转到其他页面或执行其他登录成功后的操作
-                      this.$router.push({path: '/'});
-                    }
+
+                    // 登录成功后的逻辑处理
+                    this.$message({
+                      message: "登陆成功，欢迎回来:" + res.data.username,
+                      type: 'success',
+                    });
+                    // 可以跳转到其他页面或执行其他登录成功后的操作
+                    this.$router.push({path: '/'});
+
                   })
                   .catch(error => {
                     // 登录失败后的逻辑处理
