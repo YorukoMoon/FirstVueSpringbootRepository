@@ -21,7 +21,24 @@ const routes = [
     name: 'login',
     component: () =>import('../views/LoginForm.vue')
 
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: () =>import('../views/RegisterPage.vue')
+
+  },
+  {
+    path: '/manager',
+    name: 'manager',
+    component: () =>import('../views/RegisterPage.vue'),
+    children: [
+      { path: 'home', name: 'home',component: () =>import('../views/manager/HomeView.vue') }
+    ]
   }
+
+
+
 
 ];
 

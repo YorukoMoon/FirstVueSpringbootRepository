@@ -1,6 +1,6 @@
 <template>
 
-  <div style="display: flex;justify-content: center;align-items: center;background-color: #b8f1cc;height: 100vh;">
+  <div style="display: flex;justify-content: center;align-items: center;background-color: #69c8ef;height: 100vh;">
 
     <!--    中间的登录部分div-->
     <div style="display: flex;gap: 30px;background-color: white;border-radius: 20px;overflow: hidden">
@@ -16,7 +16,7 @@
 
         <!--        表单部分-->
         <el-form ref="loginForm" :model="user" :rules="loginRules">
-          <div style="font-size: 18px;font-weight: bold; text-align: center;padding-bottom: 10px">欢迎登录后台管理系统
+          <div style="font-size: 18px;font-weight: bold; text-align: center;padding-bottom: 10px">请注册
           </div>
 
           <el-form-item prop="username">
@@ -24,6 +24,9 @@
           </el-form-item>
           <el-form-item prop="password">
             <el-input type="password" v-model="user.password" placeholder="请输入密码"></el-input>
+          </el-form-item>
+          <el-form-item prop="validPassword">
+            <el-input type="password" v-model="user.validPassword" placeholder="请再次输入密码"></el-input>
           </el-form-item>
 
           <!--          验证码-->
@@ -38,17 +41,15 @@
           </el-form-item>
 
           <el-form-item>
-            <el-button type="primary" @click="login">登录</el-button>
+            <el-button type="primary" @click="login">注册</el-button>
           </el-form-item>
 
           <el-form-item>
             <div style="display: flex">
               <span style="flex: 1">
-              没有账号？<span class="themeColor" style="cursor: pointer;" @click="$router.push({path: '/register'});">请注册</span>
+              已有账号？<span class="themeColor" style="cursor: pointer;" @click="$router.push({ path: '/login' })">请登录</span>
               </span>
-              <span class="themeColor" style="flex: 1;text-align: right;cursor: pointer;">
-              忘记密码
-              </span>
+
 
 
             </div>
@@ -97,6 +98,18 @@ export default {
         callback();
     };
 
+    //定义再次输入验证码校验规则
+    const validPasswordValidator = (rule, value, callback) => {
+
+      if (value === '') {
+        callback(new Error('请输入验证码'));
+      } else if (value !== this.user.password) {
+        callback(new Error("两次输入密码不一致！"));
+      }else
+        callback();
+
+    };
+
     return {
 
       code: '',//组件的验证码code
@@ -104,23 +117,22 @@ export default {
         username: '',
         password: '',
         propValidCode: '',//输入的验证码code
-
+        validPassword: '',
 
       },
 
       //定义表单中各属性校验rules，alidator: 为此属性的校验方式名字
       loginRules: {
-        username: [{validator: usernameValidator, trigger: 'blur'}],
+        username: [{validator: usernameValidator, trigger: 'blur'}],//自定义的方式
         password: [{validator: passwordValidator, trigger: 'blur'}],
         propValidCode: [{validator: validCodeValidator, trigger: 'blur'}],
+        validPassword: [{validator: validPasswordValidator, trigger: 'blur'}],//非自定义的方式
       }
 
     };
   },
   methods: {
     login() {
-
-      // debugger;
       //如若表单loginForm校验通过才能发送请求，否则不发
       this.$refs["loginForm"].validate((valid) => {
             if (valid) {
@@ -134,19 +146,17 @@ export default {
               // }
 
               // 使用 Axios 发起登录请求
-              this.$request.post('/login', this.user)
+              this.$request.post('/register', this.user)
                   .then(res => {
                     if (res.code === '200') {
                       // 登录成功后的逻辑处理
                       this.$message({
-                        message: "登陆成功，欢迎回来:" + res.data.username,
+                        message: "注册成功",
                         type: 'success',
                       });
-                      //登陆成功之后储存一下用户数据
-                      localStorage.setItem("honeyUser", JSON.stringify(res.data));
                       // 可以跳转到其他页面或执行其他登录成功后的操作
                       this.$router.push({path: '/'});
-                    }else//返回值不是200的时候
+                    }else
                       this.$message.error(res.msg);
                   })
 

@@ -13,7 +13,6 @@
 
       <!--      右边的表单部分div-->
       <div style="flex: 1;justify-content: center;align-items: center;display: flex;">
-
         <!--        表单部分-->
         <el-form ref="loginForm" :model="user" :rules="loginRules">
           <div style="font-size: 18px;font-weight: bold; text-align: center;padding-bottom: 10px">欢迎登录后台管理系统
@@ -119,8 +118,6 @@ export default {
   },
   methods: {
     login() {
-
-      // debugger;
       //如若表单loginForm校验通过才能发送请求，否则不发
       this.$refs["loginForm"].validate((valid) => {
             if (valid) {

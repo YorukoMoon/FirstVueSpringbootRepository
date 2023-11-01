@@ -1,12 +1,12 @@
 <template>
   <div>
-
-    <!--    侧边栏-->
-    <el-menu router :default-active="$route.path">
-
+    <el-menu router :default-active="$route.path" >
       <el-menu-item index="/">
-        <i class="el-icon-s-home"></i>
-        <span>首页</span>
+        <template slot="title">
+          <i class="el-icon-s-home"></i>
+          <span>首页</span>
+        </template>
+
       </el-menu-item>
       <el-menu-item index="/HomeView">系统首页</el-menu-item>
       <el-submenu>
@@ -19,12 +19,32 @@
 
     </el-menu>
 
+    //可搜索的选择框
+    <el-select v-model="value" placeholder="请选择" filterable>
+      <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value">
+      </el-option>
+    </el-select>
 
-    <!--    24份布局-->
+    //密码input框
+    <el-input show-password placeholder="请输入密码" v-model="password"></el-input>
+
+    //带输入建议的input框
+    <el-autocomplete
+        class="inline-input"
+        v-model="state1"
+        :fetch-suggestions="querySearch"
+        placeholder="请输入内容"
+        @select="handleSelect"
+    ></el-autocomplete>
+
+
     <el-row>
-      <!--    24份布局右边的12为信息表-->
       <el-col :span="12">
-        <!--所有用户信息表-->
+
         <el-table :data="users">
           <el-table-column label="id" prop="id"></el-table-column>
 
@@ -77,7 +97,8 @@ export default {
       tableData: [
         {name: '情哥哥', address: '安徽合肥', id: 1, age: "30"}
       ],
-      users: [],
+      users : [],
+
 
 
     }
@@ -88,15 +109,18 @@ export default {
   methods: {
 
 
+
+
     edit() {
       this.$confirm("这是个什么东西", "提示", {
         type: "warning"
-      }).then(() => {
+      }).then( ()=> {
         this.$message.success("确认")
       }).catch(() => {
         this.$message.warning("取消")
       })
     },
+
 
 
     querySearch(queryString, cb) {
@@ -119,7 +143,7 @@ export default {
 
 //加载完成后触发
   mounted() {
-    request.get('http://localhost:8081/user/selectAll').then(res => {
+    request.get('http://localhost:8081/user/selectAll').then(res=>{
           console.log(res)
           this.users = res.data;
         },
@@ -131,6 +155,7 @@ export default {
 
 
     )
+
 
 
   }
