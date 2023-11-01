@@ -1,173 +1,94 @@
 <template>
+  <div>
+    <!--    包裹整个页面的container-->
+    <el-container style="height: 100vh">
+      <!--      左侧-->
+      <el-aside>
+        <!--        导航栏-->
+        <el-menu router :default-active="$route.path">
+          <el-menu-item index="/manager/home">
+            <template slot="title">
+              <i class="el-icon-s-home"></i>
+              <span>首页</span>
+            </template>
 
-  <div style="display: flex;justify-content: center;align-items: center;background-color: #b8f1cc;height: 100vh;">
+          </el-menu-item>
 
-    <!--    中间的登录部分div-->
-    <div style="display: flex;gap: 30px;background-color: white;border-radius: 20px;overflow: hidden">
-
-      <!--      左边的图片部分-->
-      <div style="flex: 1;display: flex;">
-        <img style="flex: 1;width: 60%;" src="@/assets/loginPicture.png">
-      </div>
-
-
-      <!--      右边的表单部分div-->
-      <div style="flex: 1;justify-content: center;align-items: center;display: flex;">
-        <!--        表单部分-->
-        <el-form ref="loginForm" :model="user" :rules="loginRules">
-          <div style="font-size: 18px;font-weight: bold; text-align: center;padding-bottom: 10px">欢迎登录后台管理系统
-          </div>
-
-          <el-form-item prop="username">
-            <el-input v-model="user.username" placeholder="请输入用户名"></el-input>
-          </el-form-item>
-          <el-form-item prop="password">
-            <el-input type="password" v-model="user.password" placeholder="请输入密码"></el-input>
-          </el-form-item>
-
-          <!--          验证码-->
-          <el-form-item prop="propValidCode">
-            <div style="display: flex">
-              <el-input style="width: 50%;flex: 1;" placeholder="请输入验证码" v-model="user.propValidCode"></el-input>
-              <div style="flex: 1;">
-                <ValidCode @input="createValidCode"/>
-
-              </div>
+          <el-submenu>
+            <template slot="title">
+              <i class="el-icon-menu"></i>
+              <span>信息管理</span>
+            </template>
+            <el-menu-item>用户信息</el-menu-item>
+          </el-submenu>
+        </el-menu>
+      </el-aside>
+      <!--      右侧部分-->
+      <el-container>
+        <!--        上面的横条区域-->
+        <el-header>
+          <el-row>
+            <el-col :span="22">
+            <div style="text-align: right">
+              我的
             </div>
-          </el-form-item>
+            </el-col>
+            <el-col :span="2"></el-col>
+          </el-row>
 
-          <el-form-item>
-            <el-button type="primary" @click="login">登录</el-button>
-          </el-form-item>
+        </el-header>
+        <!--下面的主体部分-->
+        <el-main>
+          <!--          主体部分为子路由-->
+          <router-view></router-view>
+        </el-main>
 
-          <el-form-item>
-            <div style="display: flex">
-              <span style="flex: 1">
-              没有账号？<span class="themeColor" style="cursor: pointer;" @click="$router.push({path: '/register'});">请注册</span>
-              </span>
-              <span class="themeColor" style="flex: 1;text-align: right;cursor: pointer;">
-              忘记密码
-              </span>
+      </el-container>
 
 
-            </div>
-          </el-form-item>
+    </el-container>
 
 
-        </el-form>
-      </div>
-    </div>
+
+
   </div>
 </template>
 
 <script>
 
-import '@/assets/css/global.css';
-import ValidCode from "@/components/ValidCode";
-
+import request from "@/utils/request";
 
 export default {
-  components: {
-    ValidCode,
-  },
 
+
+  name: 'ManagerView',//不是错误，是说建议我用多个单词组成的名字命名组件，你改成elemetTest就没事了
   data() {
-
-    //定义各属性校验方式内容
-    const usernameValidator = (rule, value, callback) => {
-
-      if (!value) {
-        callback(new Error('用户名不能为空'));
-      } else
-        callback();
-    };
-    const passwordValidator = (rule, value, callback) => {
-      if (!value) {
-
-        callback(new Error('密码不能为空'));
-      } else
-        callback();
-    };
-    const validCodeValidator = (rule, value, callback) => {
-
-      if (value === '') {
-        callback(new Error('请输入验证码'));
-      } else
-        callback();
-    };
-
     return {
 
-      code: '',//组件的验证码code
-      user: {
-        username: '',
-        password: '',
-        propValidCode: '',//输入的验证码code
-
-
-      },
-
-      //定义表单中各属性校验rules，alidator: 为此属性的校验方式名字
-      loginRules: {
-        username: [{validator: usernameValidator, trigger: 'blur'}],
-        password: [{validator: passwordValidator, trigger: 'blur'}],
-        propValidCode: [{validator: validCodeValidator, trigger: 'blur'}],
-      }
-
-    };
+      value: '',
+      password: '',
+      state1: '',
+      users: [],
+    }
   },
-  methods: {
-    login() {
-      //如若表单loginForm校验通过才能发送请求，否则不发
-      this.$refs["loginForm"].validate((valid) => {
-            if (valid) {
-              // //启用验证码校验
-              // if (this.user.propValidCode.toLowerCase() !== this.code.toLowerCase()) {
-              //   this.$message({
-              //     message: "验证码错误",
-              //     type: 'error',
-              //   });
-              //   return
-              // }
 
-              // 使用 Axios 发起登录请求
-              this.$request.post('/login', this.user)
-                  .then(res => {
-                    if (res.code === '200') {
-                      // 登录成功后的逻辑处理
-                      this.$message({
-                        message: "登陆成功，欢迎回来:" + res.data.username,
-                        type: 'success',
-                      });
-                      //登陆成功之后储存一下用户数据
-                      localStorage.setItem("honeyUser", JSON.stringify(res.data));
-                      // 可以跳转到其他页面或执行其他登录成功后的操作
-                      this.$router.push({path: '/'});
-                    }else//返回值不是200的时候
-                      this.$message.error(res.msg);
-                  })
+  methods: {},
 
-            } else {
-
-              return;
-            }
-          }//this.$refs["loginForm"].validate((valid) => {
-      )
-    },
-
-    //把验证码插件的值赋值给this.code，即获得验证码的真实值
-    createValidCode(data) {
-      this.code = data
-    },
-
-
-  },
+//加载完成后触发
   mounted() {
+    request.get('http://localhost:8081/user/selectAll').then(res => {
+          console.log(res)
+          this.users = res.data;
+        },
+    )
+
   }
+
 }
+
 
 </script>
 
+<style scoped>
 
-
-
+</style>

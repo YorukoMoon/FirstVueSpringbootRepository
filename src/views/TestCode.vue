@@ -1,89 +1,76 @@
-<el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-<el-form-item label="密码" prop="pass">
-  <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
-</el-form-item>
-<el-form-item label="确认密码" prop="checkPass">
-  <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
-</el-form-item>
-<el-form-item label="年龄" prop="age">
-  <el-input v-model.number="ruleForm.age"></el-input>
-</el-form-item>
-<el-form-item>
-  <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
-  <el-button @click="resetForm('ruleForm')">重置</el-button>
-</el-form-item>
-</el-form>
-<script>
-export default {
-  data() {
-    var checkAge = (rule, value, callback) => {
-      if (!value) {
-        return callback(new Error('年龄不能为空'));
-      }
-      setTimeout(() => {
-        if (!Number.isInteger(value)) {
-          callback(new Error('请输入数字值'));
-        } else {
-          if (value < 18) {
-            callback(new Error('必须年满18岁'));
-          } else {
-            callback();
-          }
-        }
-      }, 1000);
-    };
-    var validatePass = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入密码'));
-      } else {
-        if (this.ruleForm.checkPass !== '') {
-          this.$refs.ruleForm.validateField('checkPass');
-        }
-        callback();
-      }
-    };
-    var validatePass2 = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请再次输入密码'));
-      } else if (value !== this.ruleForm.pass) {
-        callback(new Error('两次输入密码不一致!'));
-      } else {
-        callback();
-      }
-    };
-    return {
-      ruleForm: {
-        pass: '',
-        checkPass: '',
-        age: ''
-      },
-      rules: {
-        pass: [
-          { validator: validatePass, trigger: 'blur' }
-        ],
-        checkPass: [
-          { validator: validatePass2, trigger: 'blur' }
-        ],
-        age: [
-          { validator: checkAge, trigger: 'blur' }
-        ]
-      }
-    };
-  },
-  methods: {
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          alert('submit!');
-        } else {
-          console.log('error submit!!');
-          return false;
-        }
-      });
-    },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
-    }
-  }
-}
-</script>
+<el-container style="height: 500px; border: 1px solid #eee">
+<el-aside width="200px" style="background-color: rgb(238, 241, 246)">
+  <el-menu :default-openeds="['1', '3']">
+    <el-submenu index="1">
+      <template slot="title"><i class="el-icon-message"></i>导航一</template>
+      <el-menu-item-group>
+        <template slot="title">分组一</template>
+        <el-menu-item index="1-1">选项1</el-menu-item>
+        <el-menu-item index="1-2">选项2</el-menu-item>
+      </el-menu-item-group>
+      <el-menu-item-group title="分组2">
+        <el-menu-item index="1-3">选项3</el-menu-item>
+      </el-menu-item-group>
+      <el-submenu index="1-4">
+        <template slot="title">选项4</template>
+        <el-menu-item index="1-4-1">选项4-1</el-menu-item>
+      </el-submenu>
+    </el-submenu>
+    <el-submenu index="2">
+      <template slot="title"><i class="el-icon-menu"></i>导航二</template>
+      <el-menu-item-group>
+        <template slot="title">分组一</template>
+        <el-menu-item index="2-1">选项1</el-menu-item>
+        <el-menu-item index="2-2">选项2</el-menu-item>
+      </el-menu-item-group>
+      <el-menu-item-group title="分组2">
+        <el-menu-item index="2-3">选项3</el-menu-item>
+      </el-menu-item-group>
+      <el-submenu index="2-4">
+        <template slot="title">选项4</template>
+        <el-menu-item index="2-4-1">选项4-1</el-menu-item>
+      </el-submenu>
+    </el-submenu>
+    <el-submenu index="3">
+      <template slot="title"><i class="el-icon-setting"></i>导航三</template>
+      <el-menu-item-group>
+        <template slot="title">分组一</template>
+        <el-menu-item index="3-1">选项1</el-menu-item>
+        <el-menu-item index="3-2">选项2</el-menu-item>
+      </el-menu-item-group>
+      <el-menu-item-group title="分组2">
+        <el-menu-item index="3-3">选项3</el-menu-item>
+      </el-menu-item-group>
+      <el-submenu index="3-4">
+        <template slot="title">选项4</template>
+        <el-menu-item index="3-4-1">选项4-1</el-menu-item>
+      </el-submenu>
+    </el-submenu>
+  </el-menu>
+</el-aside>
+
+<el-container>
+  <el-header style="text-align: right; font-size: 12px">
+    <el-dropdown>
+      <i class="el-icon-setting" style="margin-right: 15px"></i>
+      <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item>查看</el-dropdown-item>
+        <el-dropdown-item>新增</el-dropdown-item>
+        <el-dropdown-item>删除</el-dropdown-item>
+      </el-dropdown-menu>
+    </el-dropdown>
+    <span>王小虎</span>
+  </el-header>
+
+  <el-main>
+    <el-table :data="tableData">
+      <el-table-column prop="date" label="日期" width="140">
+      </el-table-column>
+      <el-table-column prop="name" label="姓名" width="120">
+      </el-table-column>
+      <el-table-column prop="address" label="地址">
+      </el-table-column>
+    </el-table>
+  </el-main>
+</el-container>
+</el-container>

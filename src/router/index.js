@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import HomeView from "@/views/HomeView.vue";
 
 Vue.use(VueRouter)
 
@@ -8,12 +7,14 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: HomeView
+    redirect:'/manager/home'
+    // component: memberHomeView
   },
+    // member的首页路由，暂时先重定向到管理员的主页
   {
     path: '/elementTest',
     name: 'ElementTest',
-    component: () =>import('../views/HomeView.vue')
+    component: () =>import('../views/TestCode.vue')
 
   },
   {
@@ -29,11 +30,13 @@ const routes = [
 
   },
   {
-    path: '/manager',
+    path: '/manager/',
     name: 'manager',
-    component: () =>import('../views/RegisterPage.vue'),
+    //也重定向到主页
+    component: () =>import('../views/ManagerView.vue'),
+    redirect: '/manager/home',
     children: [
-      { path: 'home', name: 'home',component: () =>import('../views/manager/HomeView.vue') }
+      { path: 'home', name: 'managerHome',component: () =>import('../views/manager/HomeView.vue') }
     ]
   }
 
